@@ -6,9 +6,13 @@
       fx:controller="backend.controller.OrderController"
       alignment="CENTER" spacing="10">
 
-    <TextField fx:id="nameField" promptText="이름"/>
+    <TextField fx:id="nameField" promptText="수신자명"/>
     <TextField fx:id="phoneField" promptText="전화번호"/>
     <TextField fx:id="addressField" promptText="주소"/>
+    <TextField fx:id="quantityField" promptText="수량"/>
+    <TextField fx:id="itemNameField" promptText="상품명"/>
+    <TextField fx:id="senderNameField" promptText="보내는사람"/>
+    <TextField fx:id="senderPhoneField" promptText="보내는사람 전화번호"/>
     <Button text="저장" onAction="#onSave"/>
 
 </VBox>
