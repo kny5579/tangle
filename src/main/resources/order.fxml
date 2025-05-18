@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="backend.controller.OrderController"
+      alignment="CENTER" spacing="10">
+
+    <TextField fx:id="nameField" promptText="이름"/>
+    <TextField fx:id="phoneField" promptText="전화번호"/>
+    <TextField fx:id="addressField" promptText="주소"/>
+    <Button text="저장" onAction="#onSave"/>
+
+</VBox>
+
