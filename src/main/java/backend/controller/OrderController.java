@@ -17,6 +17,10 @@ public class OrderController {
 
     @FXML
     public void onSave() {
-        System.out.println("저장: " + nameField.getText());
+        String name = nameField.getText();
+        String phone = phoneField.getText();
+        String address = addressField.getText();
+
+        System.out.println("저장됨: " + name + ", " + phone + ", " + address);
     }
 }
