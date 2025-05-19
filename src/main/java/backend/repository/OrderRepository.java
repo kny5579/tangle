@@ -32,7 +32,8 @@ public class OrderRepository {
     public void insertOrder(Order order) {
         String sql = "INSERT INTO orders (receiver_name, address, phone, quantity, item_name, sender_name, sender_phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, order.getReceiverName());
             pstmt.setString(2, order.getAddress());
             pstmt.setString(3, order.getPhone());
@@ -42,14 +43,18 @@ public class OrderRepository {
             pstmt.setString(7, order.getSenderPhone());
             pstmt.executeUpdate();
 
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                order.setId(rs.getInt(1));
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()")) {
+                if (rs.next()) {
+                    order.setId(rs.getInt(1));
+                }
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     public void loadAllOrders(ObservableList<Order> list) {
         String sql = "SELECT * FROM orders";

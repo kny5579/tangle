@@ -113,8 +113,8 @@ public class OrderController {
                     senderNameField.getText(),
                     senderPhoneField.getText()
             );
-            orderList.add(order);
             service.save(order);
+            orderList.add(order);
             clearFields();
         } catch (NumberFormatException e) {
             System.out.println("수량은 숫자로 입력하세요.");
