@@ -1,12 +1,14 @@
 package backend.controller;
 
 import backend.entity.Order;
+import backend.service.OrderService;
 import backend.util.ExcelExporter;
-import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.IntegerStringConverter;
 
@@ -32,9 +34,17 @@ public class OrderController {
     @FXML private TableColumn<Order, String> senderPhoneCol;
 
     private final ObservableList<Order> orderList = FXCollections.observableArrayList();
+    private final OrderService service = new OrderService();
 
     @FXML
     public void initialize() {
+        setupTableView();
+        service.initializeTable();
+        service.loadOrders(orderList);
+        orderTable.setItems(orderList);
+    }
+
+    private void setupTableView() {
         orderTable.setEditable(true);
 
         receiverCol.setCellValueFactory(cell -> cell.getValue().receiverNameProperty());
@@ -53,7 +63,41 @@ public class OrderController {
         senderPhoneCol.setCellFactory(TextFieldTableCell.forTableColumn());
         quantityCol.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
 
-        orderTable.setItems(orderList);
+        receiverCol.setOnEditCommit(e -> {
+            Order order = e.getRowValue();
+            order.setReceiverName(e.getNewValue());
+            service.update(order);
+        });
+        addressCol.setOnEditCommit(e -> {
+            Order order = e.getRowValue();
+            order.setAddress(e.getNewValue());
+            service.update(order);
+        });
+        phoneCol.setOnEditCommit(e -> {
+            Order order = e.getRowValue();
+            order.setPhone(e.getNewValue());
+            service.update(order);
+        });
+        quantityCol.setOnEditCommit(e -> {
+            Order order = e.getRowValue();
+            order.setQuantity(e.getNewValue());
+            service.update(order);
+        });
+        itemNameCol.setOnEditCommit(e -> {
+            Order order = e.getRowValue();
+            order.setItemName(e.getNewValue());
+            service.update(order);
+        });
+        senderCol.setOnEditCommit(e -> {
+            Order order = e.getRowValue();
+            order.setSenderName(e.getNewValue());
+            service.update(order);
+        });
+        senderPhoneCol.setOnEditCommit(e -> {
+            Order order = e.getRowValue();
+            order.setSenderPhone(e.getNewValue());
+            service.update(order);
+        });
     }
 
     @FXML
@@ -69,6 +113,7 @@ public class OrderController {
                     senderPhoneField.getText()
             );
             orderList.add(order);
+            service.save(order);
             clearFields();
         } catch (NumberFormatException e) {
             System.out.println("수량은 숫자로 입력하세요.");

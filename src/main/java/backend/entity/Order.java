@@ -4,9 +4,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 public class Order {
     private final StringProperty receiverName = new SimpleStringProperty();
@@ -42,4 +39,12 @@ public class Order {
     public String getItemName() { return itemName.get(); }
     public String getSenderName() { return senderName.get(); }
     public String getSenderPhone() { return senderPhone.get(); }
+
+    public void setReceiverName(String value) { receiverName.set(value); }
+    public void setAddress(String value) { address.set(value); }
+    public void setPhone(String value) { phone.set(value); }
+    public void setQuantity(int value) { quantity.set(value); }
+    public void setItemName(String value) { itemName.set(value); }
+    public void setSenderName(String value) { senderName.set(value); }
+    public void setSenderPhone(String value) { senderPhone.set(value); }
 }
