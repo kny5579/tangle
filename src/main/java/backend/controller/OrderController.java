@@ -3,12 +3,11 @@ package backend.controller;
 import backend.entity.Order;
 import backend.service.OrderService;
 import backend.util.ExcelExporter;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.IntegerStringConverter;
 
@@ -25,6 +24,7 @@ public class OrderController {
     @FXML private TextField senderPhoneField;
 
     @FXML private TableView<Order> orderTable;
+    @FXML private TableColumn<Order, Number> idCol;
     @FXML private TableColumn<Order, String> receiverCol;
     @FXML private TableColumn<Order, String> addressCol;
     @FXML private TableColumn<Order, String> phoneCol;
@@ -47,6 +47,7 @@ public class OrderController {
     private void setupTableView() {
         orderTable.setEditable(true);
 
+        idCol.setCellValueFactory(cell -> cell.getValue().idProperty());
         receiverCol.setCellValueFactory(cell -> cell.getValue().receiverNameProperty());
         addressCol.setCellValueFactory(cell -> cell.getValue().addressProperty());
         phoneCol.setCellValueFactory(cell -> cell.getValue().phoneProperty());

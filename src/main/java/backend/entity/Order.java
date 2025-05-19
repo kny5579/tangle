@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Order {
+    private final IntegerProperty id = new SimpleIntegerProperty();
     private final StringProperty receiverName = new SimpleStringProperty();
     private final StringProperty address = new SimpleStringProperty();
     private final StringProperty phone = new SimpleStringProperty();
@@ -14,7 +15,8 @@ public class Order {
     private final StringProperty senderName = new SimpleStringProperty();
     private final StringProperty senderPhone = new SimpleStringProperty();
 
-    public Order(String receiverName, String address, String phone, int quantity, String itemName, String senderName, String senderPhone) {
+    public Order(int id, String receiverName, String address, String phone, int quantity, String itemName, String senderName, String senderPhone) {
+        this.id.set(id);
         this.receiverName.set(receiverName);
         this.address.set(address);
         this.phone.set(phone);
@@ -24,6 +26,11 @@ public class Order {
         this.senderPhone.set(senderPhone);
     }
 
+    public Order(String receiverName, String address, String phone, int quantity, String itemName, String senderName, String senderPhone) {
+        this(0, receiverName, address, phone, quantity, itemName, senderName, senderPhone);
+    }
+
+    public IntegerProperty idProperty() { return id; }
     public StringProperty receiverNameProperty() { return receiverName; }
     public StringProperty addressProperty() { return address; }
     public StringProperty phoneProperty() { return phone; }
@@ -32,6 +39,7 @@ public class Order {
     public StringProperty senderNameProperty() { return senderName; }
     public StringProperty senderPhoneProperty() { return senderPhone; }
 
+    public int getId() { return id.get(); }
     public String getReceiverName() { return receiverName.get(); }
     public String getAddress() { return address.get(); }
     public String getPhone() { return phone.get(); }
@@ -40,6 +48,7 @@ public class Order {
     public String getSenderName() { return senderName.get(); }
     public String getSenderPhone() { return senderPhone.get(); }
 
+    public void setId(int id) { this.id.set(id); }
     public void setReceiverName(String value) { receiverName.set(value); }
     public void setAddress(String value) { address.set(value); }
     public void setPhone(String value) { phone.set(value); }
