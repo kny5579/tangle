@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="backend.controller.OrderController"
-      alignment="CENTER" spacing="10">
+      alignment="CENTER" spacing="10" prefWidth="800">
 
+    <!-- 입력 필드 -->
     <TextField fx:id="nameField" promptText="수신자명"/>
     <TextField fx:id="phoneField" promptText="전화번호"/>
     <TextField fx:id="addressField" promptText="주소"/>
@@ -13,7 +15,24 @@
     <TextField fx:id="itemNameField" promptText="상품명"/>
     <TextField fx:id="senderNameField" promptText="보내는사람"/>
     <TextField fx:id="senderPhoneField" promptText="보내는사람 전화번호"/>
-    <Button text="저장" onAction="#onSave"/>
+
+    <!-- 버튼 2개 -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="추가" onAction="#onAdd"/>
+        <Button text="엑셀 저장" onAction="#onSave"/>
+    </HBox>
+
+    <!-- 주문 내역 테이블 -->
+    <TableView fx:id="orderTable" prefHeight="300" prefWidth="750">
+        <columns>
+            <TableColumn fx:id="receiverCol" text="수신자명" prefWidth="100"/>
+            <TableColumn fx:id="addressCol" text="주소" prefWidth="150"/>
+            <TableColumn fx:id="phoneCol" text="전화번호" prefWidth="100"/>
+            <TableColumn fx:id="quantityCol" text="수량" prefWidth="50"/>
+            <TableColumn fx:id="itemNameCol" text="상품명" prefWidth="100"/>
+            <TableColumn fx:id="senderCol" text="보내는사람" prefWidth="100"/>
+            <TableColumn fx:id="senderPhoneCol" text="보내는사람 번호" prefWidth="120"/>
+        </columns>
+    </TableView>
 
 </VBox>
-

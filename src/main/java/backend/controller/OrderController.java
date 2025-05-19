@@ -2,14 +2,16 @@ package backend.controller;
 
 import backend.entity.Order;
 import backend.util.ExcelExporter;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-// ui 이벤트 처리
 public class OrderController {
 
     @FXML private TextField nameField;
@@ -20,42 +22,72 @@ public class OrderController {
     @FXML private TextField senderNameField;
     @FXML private TextField senderPhoneField;
 
-    private final List<Order> orderList = new ArrayList<>();
+    @FXML private TableView<Order> orderTable;
+    @FXML private TableColumn<Order, String> receiverCol;
+    @FXML private TableColumn<Order, String> addressCol;
+    @FXML private TableColumn<Order, String> phoneCol;
+    @FXML private TableColumn<Order, Integer> quantityCol;
+    @FXML private TableColumn<Order, String> itemNameCol;
+    @FXML private TableColumn<Order, String> senderCol;
+    @FXML private TableColumn<Order, String> senderPhoneCol;
+
+    private final ObservableList<Order> orderList = FXCollections.observableArrayList();
+
+    @FXML
+    public void initialize() {
+        orderTable.setEditable(true);
+
+        receiverCol.setCellValueFactory(cell -> cell.getValue().receiverNameProperty());
+        addressCol.setCellValueFactory(cell -> cell.getValue().addressProperty());
+        phoneCol.setCellValueFactory(cell -> cell.getValue().phoneProperty());
+        quantityCol.setCellValueFactory(cell -> cell.getValue().quantityProperty().asObject());
+        itemNameCol.setCellValueFactory(cell -> cell.getValue().itemNameProperty());
+        senderCol.setCellValueFactory(cell -> cell.getValue().senderNameProperty());
+        senderPhoneCol.setCellValueFactory(cell -> cell.getValue().senderPhoneProperty());
+
+        receiverCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        addressCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        phoneCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        itemNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        senderCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        senderPhoneCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        quantityCol.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+
+        orderTable.setItems(orderList);
+    }
+
+    @FXML
+    public void onAdd() {
+        try {
+            Order order = new Order(
+                    nameField.getText(),
+                    addressField.getText(),
+                    phoneField.getText(),
+                    Integer.parseInt(quantityField.getText()),
+                    itemNameField.getText(),
+                    senderNameField.getText(),
+                    senderPhoneField.getText()
+            );
+            orderList.add(order);
+            clearFields();
+        } catch (NumberFormatException e) {
+            System.out.println("수량은 숫자로 입력하세요.");
+        }
+    }
 
     @FXML
     public void onSave() {
-        String name = nameField.getText();
-        String phone = phoneField.getText();
-        String address = addressField.getText();
-        String itemName = itemNameField.getText();
-        String sender = senderNameField.getText();
-        String senderPhone = senderPhoneField.getText();
-        int quantity;
-
-        try {
-            quantity = Integer.parseInt(quantityField.getText());
-        } catch (NumberFormatException e) {
-            System.out.println("수량은 숫자로 입력하세요.");
-            return;
-        }
-
-        Order order = Order.of(name, address, phone, quantity, itemName, sender, senderPhone);
-        orderList.add(order);
-
         try {
             ExcelExporter.exportToExcel(orderList, "주문내역.xlsx");
-            System.out.println("엑셀 저장 성공");
+            System.out.println("엑셀 저장 완료");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-        // 입력창 초기화
-        nameField.clear();
-        phoneField.clear();
-        addressField.clear();
-        quantityField.clear();
-        itemNameField.clear();
-        senderNameField.clear();
-        senderPhoneField.clear();
+    private void clearFields() {
+        nameField.clear(); phoneField.clear(); addressField.clear();
+        quantityField.clear(); itemNameField.clear();
+        senderNameField.clear(); senderPhoneField.clear();
     }
 }
