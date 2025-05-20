@@ -4,6 +4,9 @@ import backend.entity.Order;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class OrderRepository {
     private static final String DB_URL = "jdbc:sqlite:orders.db";
@@ -106,4 +109,89 @@ public class OrderRepository {
             e.printStackTrace();
         }
     }
+
+    public List<Order> getAllOrders() {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT * FROM orders";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Order order = new Order(
+                        rs.getInt("id"),
+                        rs.getString("receiver_name"),
+                        rs.getString("address"),
+                        rs.getString("phone"),
+                        rs.getInt("quantity"),
+                        rs.getString("item_name"),
+                        rs.getString("sender_name"),
+                        rs.getString("sender_phone")
+                );
+                orders.add(order);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
+    public List<Order> findOrdersByReceiverNamePrefix(String prefix) {
+        String sql = """
+        SELECT * FROM orders
+        WHERE receiver_name LIKE ?
+        ORDER BY receiver_name
+        LIMIT 10
+        """;
+        List<Order> results = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, prefix + "%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                results.add(new Order(
+                        rs.getInt("id"),
+                        rs.getString("receiver_name"),
+                        rs.getString("address"),
+                        rs.getString("phone"),
+                        rs.getInt("quantity"),
+                        rs.getString("item_name"),
+                        rs.getString("sender_name"),
+                        rs.getString("sender_phone")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    public Optional<Order> findOrderByReceiverName(String name) {
+        String sql = "SELECT * FROM orders WHERE receiver_name = ? LIMIT 1";
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return Optional.of(new Order(
+                        rs.getInt("id"),
+                        rs.getString("receiver_name"),
+                        rs.getString("address"),
+                        rs.getString("phone"),
+                        rs.getInt("quantity"),
+                        rs.getString("item_name"),
+                        rs.getString("sender_name"),
+                        rs.getString("sender_phone")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+
 }

@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.IntegerStringConverter;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
 
@@ -42,6 +43,8 @@ public class OrderController {
         service.initializeTable();
         service.loadOrders(orderList);
         orderTable.setItems(orderList);
+
+        setupAutoCompletion();
     }
 
     private void setupTableView() {
@@ -136,4 +139,27 @@ public class OrderController {
         quantityField.clear(); itemNameField.clear();
         senderNameField.clear(); senderPhoneField.clear();
     }
+
+    private void setupAutoCompletion() {
+        TextFields.bindAutoCompletion(nameField, request ->
+                service.suggestReceiverNames(request.getUserText())
+        ).setOnAutoCompleted(event -> {
+            Order selected = service.findByReceiverName(event.getCompletion());
+            if (selected != null) {
+                fillFormFields(selected);
+            }
+        });
+    }
+
+    private void fillFormFields(Order order) {
+        nameField.setText(order.getReceiverName());
+        phoneField.setText(order.getPhone());
+        addressField.setText(order.getAddress());
+        quantityField.setText(String.valueOf(order.getQuantity()));
+        itemNameField.setText(order.getItemName());
+        senderNameField.setText(order.getSenderName());
+        senderPhoneField.setText(order.getSenderPhone());
+    }
+
+
 }

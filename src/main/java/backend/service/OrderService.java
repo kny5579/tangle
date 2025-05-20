@@ -4,6 +4,9 @@ import backend.entity.Order;
 import backend.repository.OrderRepository;
 import javafx.collections.ObservableList;
 
+import java.util.List;
+import java.util.Optional;
+
 public class OrderService {
 
     private final OrderRepository repository;
@@ -27,4 +30,16 @@ public class OrderService {
     public void update(Order order) {
         repository.updateOrder(order);
     }
+
+    public List<String> suggestReceiverNames(String prefix) {
+        return repository.findOrdersByReceiverNamePrefix(prefix).stream()
+                .map(Order::getReceiverName)
+                .distinct()
+                .toList();
+    }
+
+    public Order findByReceiverName(String name) {
+        return repository.findOrderByReceiverName(name).orElse(null);
+    }
+
 }

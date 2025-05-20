@@ -12,6 +12,7 @@ dependencies {
     implementation 'org.openjfx:javafx-fxml:21'
     implementation 'org.apache.poi:poi:5.2.3'
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
+    implementation 'org.controlsfx:controlsfx:11.1.2'
     implementation 'org.projectlombok:lombok:1.18.30'
     implementation 'org.xerial:sqlite-jdbc:3.43.0.0'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
@@ -19,6 +20,10 @@ dependencies {
 
 application {
     mainClass = 'backend.Main'
+
+    applicationDefaultJvmArgs = [
+            "--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED"
+    ]
 }
 
 javafx {
