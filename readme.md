@@ -19,13 +19,14 @@ JavaFX 기반으로 제작된 설치형 주문 관리 애플리케이션입니�
 
 ## ⚙️ 기술 스택
 
-| 항목        | 사용 기술                |
-|-------------|--------------------------|
-| Language    | Java 17                 |
-| UI Framework| JavaFX 21               |
-| Excel       | Apache POI 5.2.3         |
-| Build Tool  | Gradle                   |
-| 기타        | Lombok (`@Builder`, `@Getter`) |
+| 항목         | 사용 기술                         |
+|--------------|-----------------------------------|
+| Language     | Java 17                           |
+| UI Framework | JavaFX 21, ControlsFX             |
+| Database     | SQLite                            |
+| Excel        | Apache POI 5.2.3                  |
+| Build Tool   | Gradle                            |
+
 
 ---
 
