@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -142,13 +143,28 @@ public class OrderController {
 
     private void setupAutoCompletion() {
         TextFields.bindAutoCompletion(nameField, request ->
-                service.suggestReceiverNames(request.getUserText())
+                service.suggestReceiverOrders(request.getUserText())
         ).setOnAutoCompleted(event -> {
-            Order selected = service.findByReceiverName(event.getCompletion());
-            if (selected != null) {
-                fillFormFields(selected);
-            }
+            Order selected = event.getCompletion();
+            fillFormFields(selected);
         });
+
+        TextFields.bindAutoCompletion(phoneField,
+                request -> service.suggestReceiverByPhone(request.getUserText()),
+                new StringConverter<Order>() {
+                    @Override
+                    public String toString(Order order) {
+                        return order.getPhone();
+                    }
+
+                    @Override
+                    public Order fromString(String string) {
+                        return null;
+                    }
+                }).setOnAutoCompleted(event -> {
+            fillFormFields(event.getCompletion());
+        });
+
     }
 
     private void fillFormFields(Order order) {

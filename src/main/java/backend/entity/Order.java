@@ -56,4 +56,9 @@ public class Order {
     public void setItemName(String value) { itemName.set(value); }
     public void setSenderName(String value) { senderName.set(value); }
     public void setSenderPhone(String value) { senderPhone.set(value); }
+
+    @Override
+    public String toString() {
+        return getReceiverName();
+    }
 }

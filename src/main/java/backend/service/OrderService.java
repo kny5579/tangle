@@ -31,15 +31,12 @@ public class OrderService {
         repository.updateOrder(order);
     }
 
-    public List<String> suggestReceiverNames(String prefix) {
-        return repository.findOrdersByReceiverNamePrefix(prefix).stream()
-                .map(Order::getReceiverName)
-                .distinct()
-                .toList();
+    public List<Order> suggestReceiverByPhone(String prefix) {
+        return repository.findOrdersByPhonePrefix(prefix);
     }
 
-    public Order findByReceiverName(String name) {
-        return repository.findOrderByReceiverName(name).orElse(null);
+    public List<Order> suggestReceiverOrders(String prefix) {
+        return repository.findOrdersByReceiverNamePrefix(prefix);
     }
 
 }

@@ -169,14 +169,20 @@ public class OrderRepository {
         return results;
     }
 
-    public Optional<Order> findOrderByReceiverName(String name) {
-        String sql = "SELECT * FROM orders WHERE receiver_name = ? LIMIT 1";
+    public List<Order> findOrdersByPhonePrefix(String prefix) {
+        String sql = """
+        SELECT * FROM orders
+        WHERE phone LIKE ?
+        ORDER BY phone
+        LIMIT 10
+        """;
+        List<Order> results = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(DB_URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
+            pstmt.setString(1, prefix + "%");
             ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return Optional.of(new Order(
+            while (rs.next()) {
+                results.add(new Order(
                         rs.getInt("id"),
                         rs.getString("receiver_name"),
                         rs.getString("address"),
@@ -190,7 +196,7 @@ public class OrderRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Optional.empty();
+        return results;
     }
 
 
