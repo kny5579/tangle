@@ -46,6 +46,23 @@ public class OrderController {
         orderTable.setItems(orderList);
 
         setupAutoCompletion();
+
+        MenuItem deleteItem = new MenuItem("삭제");
+        deleteItem.setOnAction(e -> {
+            Order selected = orderTable.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "정말 삭제하시겠습니까?", ButtonType.YES, ButtonType.NO);
+                alert.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.YES) {
+                        service.deleteOrder(selected);
+                        orderList.remove(selected);
+                    }
+                });
+            }
+        });
+
+        ContextMenu contextMenu = new ContextMenu(deleteItem);
+        orderTable.setContextMenu(contextMenu);
     }
 
     private void setupTableView() {

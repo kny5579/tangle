@@ -110,34 +110,17 @@ public class OrderRepository {
         }
     }
 
-    public List<Order> getAllOrders() {
-        List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM orders";
-
+    public void deleteOrderById(int id) {
+        String sql = "DELETE FROM orders WHERE id = ?";
         try (Connection conn = DriverManager.getConnection(DB_URL);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                Order order = new Order(
-                        rs.getInt("id"),
-                        rs.getString("receiver_name"),
-                        rs.getString("address"),
-                        rs.getString("phone"),
-                        rs.getInt("quantity"),
-                        rs.getString("item_name"),
-                        rs.getString("sender_name"),
-                        rs.getString("sender_phone")
-                );
-                orders.add(order);
-            }
-
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return orders;
     }
+
 
     public List<Order> findOrdersByReceiverNamePrefix(String prefix) {
         String sql = """

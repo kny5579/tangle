@@ -31,6 +31,10 @@ public class OrderService {
         repository.updateOrder(order);
     }
 
+    public void deleteOrder(Order order) {
+        repository.deleteOrderById(order.getId());
+    }
+
     public List<Order> suggestReceiverByPhone(String prefix) {
         return repository.findOrdersByPhonePrefix(prefix);
     }
