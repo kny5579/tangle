@@ -9,10 +9,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import org.controlsfx.control.textfield.TextFields;
 
+import java.io.File;
 import java.io.IOException;
 
 public class OrderController {
@@ -144,13 +146,30 @@ public class OrderController {
 
     @FXML
     public void onSave() {
-        try {
-            ExcelExporter.exportToExcel(orderList, "주문내역.xlsx");
-            System.out.println("엑셀 저장 완료");
-        } catch (IOException e) {
-            e.printStackTrace();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("엑셀 파일 저장");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel 파일 (*.xlsx)", "*.xlsx")
+        );
+
+        File file = fileChooser.showSaveDialog(nameField.getScene().getWindow());
+
+        if (file != null) {
+            if (!file.getName().toLowerCase().endsWith(".xlsx")) {
+                file = new File(file.getAbsolutePath() + ".xlsx");
+            }
+
+            try {
+                ExcelExporter.exportToExcel(orderList, file);
+                System.out.println("엑셀 저장 완료");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("엑셀 저장 실패");
+            }
         }
+
     }
+
 
     private void clearFields() {
         nameField.clear(); phoneField.clear(); addressField.clear();
