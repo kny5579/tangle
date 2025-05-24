@@ -3,6 +3,7 @@ package backend.controller;
 import backend.entity.Order;
 import backend.service.OrderService;
 import backend.util.ExcelExporter;
+import backend.util.ExcelImporter;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +17,7 @@ import org.controlsfx.control.textfield.TextFields;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class OrderController {
 
@@ -49,22 +51,74 @@ public class OrderController {
 
         setupAutoCompletion();
 
-        MenuItem deleteItem = new MenuItem("삭제");
-        deleteItem.setOnAction(e -> {
-            Order selected = orderTable.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "정말 삭제하시겠습니까?", ButtonType.YES, ButtonType.NO);
-                alert.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.YES) {
-                        service.deleteOrder(selected);
-                        orderList.remove(selected);
-                    }
-                });
-            }
-        });
+        setupRowContextMenu();
+    }
 
-        ContextMenu contextMenu = new ContextMenu(deleteItem);
-        orderTable.setContextMenu(contextMenu);
+    @FXML
+    public void onAdd() {
+        try {
+            Order order = new Order(
+                    nameField.getText(),
+                    addressField.getText(),
+                    phoneField.getText(),
+                    Integer.parseInt(quantityField.getText()),
+                    itemNameField.getText(),
+                    senderNameField.getText(),
+                    senderPhoneField.getText()
+            );
+            service.save(order);
+            orderList.add(order);
+            clearFields();
+        } catch (NumberFormatException e) {
+            System.out.println("수량은 숫자로 입력하세요.");
+        }
+    }
+
+    @FXML
+    public void onSave() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("엑셀 파일 저장");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel 파일 (*.xlsx)", "*.xlsx")
+        );
+
+        File file = fileChooser.showSaveDialog(nameField.getScene().getWindow());
+
+        if (file != null) {
+            if (!file.getName().toLowerCase().endsWith(".xlsx")) {
+                file = new File(file.getAbsolutePath() + ".xlsx");
+            }
+
+            try {
+                ExcelExporter.exportToExcel(orderList, file);
+                System.out.println("엑셀 저장 완료");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("엑셀 저장 실패");
+            }
+        }
+
+    }
+
+    @FXML
+    public void onLoadExcel() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("엑셀 파일 열기");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel 파일 (*.xlsx)", "*.xlsx")
+        );
+
+        File file = fileChooser.showOpenDialog(nameField.getScene().getWindow());
+        if (file != null) {
+            try {
+                List<Order> loadedOrders = ExcelImporter.importFromExcel(file);
+                orderList.setAll(loadedOrders);
+                System.out.println("엑셀 불러오기 완료");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("엑셀 불러오기 실패");
+            }
+        }
     }
 
     private void setupTableView() {
@@ -124,52 +178,36 @@ public class OrderController {
         });
     }
 
-    @FXML
-    public void onAdd() {
-        try {
-            Order order = new Order(
-                    nameField.getText(),
-                    addressField.getText(),
-                    phoneField.getText(),
-                    Integer.parseInt(quantityField.getText()),
-                    itemNameField.getText(),
-                    senderNameField.getText(),
-                    senderPhoneField.getText()
+
+    private void setupRowContextMenu() {
+        orderTable.setRowFactory(tv -> {
+            TableRow<Order> row = new TableRow<>();
+
+            ContextMenu rowMenu = new ContextMenu();
+            MenuItem deleteItem = new MenuItem("삭제");
+            deleteItem.setOnAction(e -> {
+                Order selected = row.getItem();
+                if (selected != null) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "정말 삭제하시겠습니까?", ButtonType.YES, ButtonType.NO);
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.YES) {
+                            service.deleteOrder(selected);
+                            orderList.remove(selected);
+                        }
+                    });
+                }
+            });
+            rowMenu.getItems().add(deleteItem);
+
+            row.contextMenuProperty().bind(
+                    javafx.beans.binding.Bindings.when(row.emptyProperty())
+                            .then((ContextMenu) null)
+                            .otherwise(rowMenu)
             );
-            service.save(order);
-            orderList.add(order);
-            clearFields();
-        } catch (NumberFormatException e) {
-            System.out.println("수량은 숫자로 입력하세요.");
-        }
+
+            return row;
+        });
     }
-
-    @FXML
-    public void onSave() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("엑셀 파일 저장");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Excel 파일 (*.xlsx)", "*.xlsx")
-        );
-
-        File file = fileChooser.showSaveDialog(nameField.getScene().getWindow());
-
-        if (file != null) {
-            if (!file.getName().toLowerCase().endsWith(".xlsx")) {
-                file = new File(file.getAbsolutePath() + ".xlsx");
-            }
-
-            try {
-                ExcelExporter.exportToExcel(orderList, file);
-                System.out.println("엑셀 저장 완료");
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("엑셀 저장 실패");
-            }
-        }
-
-    }
-
 
     private void clearFields() {
         nameField.clear(); phoneField.clear(); addressField.clear();

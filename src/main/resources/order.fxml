@@ -20,6 +20,7 @@
     <HBox spacing="10" alignment="CENTER">
         <Button text="추가" onAction="#onAdd"/>
         <Button text="엑셀 저장" onAction="#onSave"/>
+        <Button text="엑셀 불러오기" onAction="#onLoadExcel"/>
     </HBox>
 
     <!-- 주문 내역 테이블 -->
