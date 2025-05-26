@@ -8,13 +8,36 @@
       alignment="CENTER" spacing="10" prefWidth="800">
 
     <!-- 입력 필드 -->
-    <TextField fx:id="nameField" promptText="수신자명"/>
-    <TextField fx:id="phoneField" promptText="전화번호"/>
-    <TextField fx:id="addressField" promptText="주소"/>
-    <TextField fx:id="quantityField" promptText="수량"/>
-    <TextField fx:id="itemNameField" promptText="상품명"/>
-    <TextField fx:id="senderNameField" promptText="보내는사람"/>
-    <TextField fx:id="senderPhoneField" promptText="보내는사람 전화번호"/>
+    <VBox spacing="5">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="수신자명:    "/>
+            <TextField fx:id="nameField" promptText="수신자명"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="전화번호:    "/>
+            <TextField fx:id="phoneField" promptText="전화번호"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="주소:            "/>
+            <TextField fx:id="addressField" promptText="주소"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="수량:            "/>
+            <TextField fx:id="quantityField" promptText="수량"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="상품명:        "/>
+            <TextField fx:id="itemNameField" promptText="상품명"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="보내는사람: "/>
+            <TextField fx:id="senderNameField" promptText="보내는사람"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="보내는사람 전화번호:"/>
+            <TextField fx:id="senderPhoneField" promptText="보내는사람 전화번호"/>
+        </HBox>
+    </VBox>
 
     <!-- 버튼 2개 -->
     <HBox spacing="10" alignment="CENTER">
